@@ -108,14 +108,14 @@ defmodule PrzmaWeb.Router do
   scope "/api/v1/admin", PrzmaWeb.Admin, as: :admin do
     pipe_through [:api, :authenticated]
     # Requires admin role
-    pipe_through [RequirePermission, permission: "admin.access"]
+    plug PrzmaWeb.Plugs.RequirePermission, "admin.access"
 
     # Organization management
     resources "/organizations", OrganizationController, only: [:index, :show, :update]
-    
+
     # User management
     resources "/users", UserController, only: [:index, :show, :update, :delete]
-    
+
     # System settings
     get "/settings", SettingsController, :show
     put "/settings", SettingsController, :update
@@ -153,18 +153,18 @@ end
 
 defmodule PrzmaWeb.ConversationController do
   use PrzmaWeb, :controller
-  
+
   alias Przma.Conversations
   alias PrzmaWeb.ErrorView
-  
+
   action_fallback PrzmaWeb.FallbackController
-  
+
   def index(conn, params) do
     organization_id = conn.assigns.current_tenant_id
     conversations = Conversations.list_conversations(organization_id, params)
     json(conn, %{data: conversations})
   end
-  
+
   def show(conn, %{"id" => id}) do
     organization_id = conn.assigns.current_tenant_id
     case Conversations.get_conversation(id, organization_id) do
@@ -176,15 +176,15 @@ defmodule PrzmaWeb.ConversationController do
         |> render(ErrorView, "404.json")
     end
   end
-  
+
   def create(conn, %{"conversation" => attrs}) do
     organization_id = conn.assigns.current_tenant_id
     user_id = conn.assigns.current_user_id
-    
+
     attrs = attrs
     |> Map.put("organization_id", organization_id)
     |> Map.put("initiated_by_id", user_id)
-    
+
     case Conversations.create_conversation(attrs) do
       {:ok, conversation} ->
         conn
@@ -196,7 +196,7 @@ defmodule PrzmaWeb.ConversationController do
         |> render(ErrorView, "error.json", changeset: changeset)
     end
   end
-  
+
   def add_participant(conn, %{"id" => id, "member_id" => member_id}) do
     case Conversations.add_participant(id, member_id) do
       :ok ->
@@ -207,11 +207,11 @@ defmodule PrzmaWeb.ConversationController do
         |> json(%{error: error})
     end
   end
-  
+
   def end_conversation(conn, %{"id" => id}) do
     organization_id = conn.assigns.current_tenant_id
     user_id = conn.assigns.current_user_id
-    
+
     with {:ok, conversation} <- Conversations.get_conversation(id, organization_id),
          {:ok, updated} <- Conversations.end_conversation(conversation, user_id) do
       json(conn, %{data: updated})
@@ -221,9 +221,9 @@ end
 
 defmodule PrzmaWeb.MessageController do
   use PrzmaWeb, :controller
-  
+
   alias Przma.Conversations
-  
+
   def index(conn, %{"conversation_id" => conversation_id} = params) do
     case Conversations.get_messages(conversation_id, params) do
       {:ok, messages} ->
@@ -234,10 +234,10 @@ defmodule PrzmaWeb.MessageController do
         |> json(%{error: error})
     end
   end
-  
+
   def create(conn, %{"conversation_id" => conversation_id, "message" => attrs}) do
     user_id = conn.assigns.current_user_id
-    
+
     case Conversations.create_message(conversation_id, user_id, attrs) do
       {:ok, message} ->
         conn
@@ -249,7 +249,7 @@ defmodule PrzmaWeb.MessageController do
         |> json(%{error: error})
     end
   end
-  
+
   def generate_ai_response(conn, %{"conversation_id" => conversation_id}) do
     case Conversations.generate_ai_response(conversation_id) do
       {:ok, message} ->

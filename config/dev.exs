@@ -4,7 +4,7 @@ import Config
 config :przma, Przma.Repo,
   username: "postgres",
   password: "postgres",
-  hostname: "localhost",
+  hostname: "172.235.17.68",
   database: "przma_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,

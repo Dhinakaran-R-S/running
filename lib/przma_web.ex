@@ -6,11 +6,11 @@ defmodule PrzmaWeb do
   This can be used in your application as:
 
       use PrzmaWeb, :controller
-      use PrzmaWeb, :html
+      use PrzmaWeb, :view
 
   The definitions below will be executed for every controller,
-  component, etc, so keep them short and clean, focused
-  on imports, uses and aliases.
+  view, etc, so keep them short and clean, focused on imports,
+  uses and aliases.
 
   Do NOT define functions inside the quoted expressions
   below. Instead, define additional modules and import
@@ -23,7 +23,6 @@ defmodule PrzmaWeb do
     quote do
       use Phoenix.Router, helpers: false
 
-      # Import common connection and controller functions to use in pipelines
       import Plug.Conn
       import Phoenix.Controller
     end
@@ -37,11 +36,25 @@ defmodule PrzmaWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, formats: [:html, :json]
-
-      use Gettext, backend: PrzmaWeb.Gettext
+      use Phoenix.Controller,
+        formats: [:json],
+        layouts: [json: PrzmaWeb.LayoutView]
 
       import Plug.Conn
+      import PrzmaWeb.Gettext
+
+      unquote(verified_routes())
+    end
+  end
+
+  def view do
+    quote do
+      use Phoenix.View,
+        root: "lib/przma_web/templates",
+        namespace: PrzmaWeb
+
+      import Phoenix.Controller,
+        only: [get_flash: 1, get_flash: 2, view_module: 1, view_template: 1]
 
       unquote(verified_routes())
     end
@@ -57,7 +70,7 @@ defmodule PrzmaWeb do
   end
 
   @doc """
-  When used, dispatch to the appropriate controller/live_view/etc.
+  When used, dispatch to the appropriate controller/view/etc.
   """
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])

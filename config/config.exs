@@ -8,12 +8,14 @@
 # config/config.exs
 import Config
 
+config :przma, ecto_repos: [Przma.Repo]
+
 # Configure your database
 config :przma, Przma.Repo,
   database: "przma_#{config_env()}",
   username: "postgres",
   password: "postgres",
-  hostname: "localhost",
+  hostname: "172.235.17.68",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
