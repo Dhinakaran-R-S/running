@@ -105,10 +105,15 @@ defmodule PrzmaWeb.Router do
   # ADMIN ROUTES
   # ============================================================================
 
+  pipeline :admin_only do
+    plug PrzmaWeb.Plugs.RequirePermission, permission: "admin.access"
+  end
+
   scope "/api/v1/admin", PrzmaWeb.Admin, as: :admin do
-    pipe_through [:api, :authenticated]
+    pipe_through [:api, :authenticated, :admin_only]
+
     # Requires admin role
-    plug PrzmaWeb.Plugs.RequirePermission, "admin.access"
+    # pipe_through [RequirePermission, permission: "admin.access"]
 
     # Organization management
     resources "/organizations", OrganizationController, only: [:index, :show, :update]

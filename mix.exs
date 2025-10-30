@@ -30,6 +30,7 @@ defmodule Przma.MixProject do
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix_live_dashboard, "~> 0.8.0"},
       {:phoenix_live_view, "~> 1.1.16"},
+      {:phoenix_view, "~> 2.0"},
 
       # Database
       {:ecto_sql, "~> 3.13.2"},
@@ -47,12 +48,22 @@ defmodule Przma.MixProject do
 
       # Background Jobs
       {:oban, "~> 2.15"},
+      {:gen_stage, "~> 1.2"},
+      {:broadway, "~> 1.0"},
 
       # HTTP Clients
       {:req, "~> 0.5.15"},
       {:finch, "~> 0.16"},
       {:tesla, "~> 1.7"},
       {:hackney, "~> 1.18"},
+      {:httpoison, "~> 1.8"},
+
+      # AWS SDK
+      {:ex_aws, "~> 2.4"},
+      {:ex_aws_s3, "~> 2.3"},
+
+      # Authentication (additional)
+      # {:argon2_elixir, "~> 3.2"},
 
       # Caching
       {:cachex, "~> 3.6"},
@@ -82,7 +93,7 @@ defmodule Przma.MixProject do
       {:cors_plug, "~> 3.0"},
 
       # Email (optional - choose one)
-      # {:swoosh, "~> 1.11"},
+      {:swoosh, "~> 1.11"},
       # {:bamboo, "~> 2.2"},
 
       # Rate Limiting

@@ -29,7 +29,7 @@ defmodule Przma.Application do
       Przma.MultiTenant,
 
       # Local AI inference
-      Przma.AI.LocalInference,
+      # Przma.AI.LocalInference,
 
       # Broadway pipeline for AI enrichment
       Przma.ActivityStreams.Pipeline,
