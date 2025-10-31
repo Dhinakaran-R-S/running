@@ -61,7 +61,7 @@ defmodule Przma.Auth.User do
   end
 
   def verify_password(user, password) do
-    Argon2.verify_pass(password, user.password_hash)
+    Pbkdf2.verify_pass(password, user.password_hash)
   end
 
   def update_password(user, new_password) do
@@ -79,7 +79,7 @@ defmodule Przma.Auth.User do
       nil -> changeset
       password ->
         changeset
-        |> put_change(:password_hash, Argon2.hash_pwd_salt(password))
+        |> put_change(:password_hash, Pbkdf2.hash_pwd_salt(password))
         |> delete_change(:password)
     end
   end
