@@ -19,6 +19,15 @@ config :przma, Przma.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
+  # # existing USER database
+  # config :przma, Przma.AuthRepo,
+  # username: "postgres",
+  # password: "postgres",
+  # database: "database v.1.0",   # your sir's existing user database
+  # hostname: "172.235.17.68",
+  # show_sensitive_data_on_connection_error: true,
+  # pool_size: 10
+
 # Configure the endpoint
 config :przma, PrzmaWeb.Endpoint,
   url: [host: "localhost"],

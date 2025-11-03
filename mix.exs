@@ -61,6 +61,7 @@ defmodule Przma.MixProject do
       # AWS SDK
       {:ex_aws, "~> 2.4"},
       {:ex_aws_s3, "~> 2.3"},
+      {:sweet_xml, "~> 0.7"},
 
       # Authentication (additional)
       # {:argon2_elixir, "~> 3.2"},
