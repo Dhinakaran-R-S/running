@@ -4,6 +4,7 @@ defmodule PrzmaWeb.Router do
   import PrzmaWeb.Plugs.AuthMiddleware
   import PrzmaWeb.Plugs.TenantMiddleware
   import PrzmaWeb.Plugs.RequirePermission
+  import Phoenix.LiveView.Router
 
   # ============================================================================
   # PIPELINES
@@ -135,6 +136,25 @@ defmodule PrzmaWeb.Router do
 
     post "/activities", WebhookController, :activities
     post "/notifications", WebhookController, :notifications
+  end
+
+# ============================================================================
+# WEB ROUTES (LiveView / Browser)
+# ============================================================================
+
+  pipeline :browser do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, {PrzmaWeb.Layouts, :root}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+  end
+
+  scope "/", PrzmaWeb do
+    pipe_through :browser
+
+    live "/auth", AuthLive
   end
 
   # ============================================================================
