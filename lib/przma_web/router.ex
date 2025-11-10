@@ -155,6 +155,7 @@ defmodule PrzmaWeb.Router do
     pipe_through :browser
 
     live "/auth", AuthLive
+    live "/app/dashboard", DashboardLive, :index
   end
 
   # ============================================================================

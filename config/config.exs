@@ -19,15 +19,6 @@ config :przma, Przma.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
-  # # existing USER database
-  # config :przma, Przma.AuthRepo,
-  # username: "postgres",
-  # password: "postgres",
-  # database: "database v.1.0",   # your sir's existing user database
-  # hostname: "172.235.17.68",
-  # show_sensitive_data_on_connection_error: true,
-  # pool_size: 10
-
 # Configure the endpoint
 config :przma, PrzmaWeb.Endpoint,
   url: [host: "localhost"],
@@ -50,6 +41,27 @@ config :przma, PrzmaWeb.Endpoint,
 #     push: 2,
 #     maintenance: 1
 #   ]
+
+# Configure esbuild (the version is required)
+config :esbuild,
+  version: "0.17.11",
+  przma: [
+    args:
+      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
+    cd: Path.expand("../assets", __DIR__),
+    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  ]
+
+config :tailwind,
+  version: "3.4.3",
+  przma: [
+    args: ~w(
+      --config=tailwind.config.js
+      --input=css/app.css
+      --output=../priv/static/assets/app.css
+    ),
+    cd: Path.expand("../assets", __DIR__)
+  ]
 
 # Configure Joken for JWT
 config :joken, default_signer: "your-secret-key-here"

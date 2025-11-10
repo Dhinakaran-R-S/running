@@ -1,7 +1,6 @@
 defmodule PrzmaWeb.AuthLive do
   use PrzmaWeb, :live_view
   alias Przma.Auth.User
-  alias Przma.AuthRepo
 
   @impl true
   def mount(_params, _session, socket) do
@@ -10,8 +9,6 @@ defmodule PrzmaWeb.AuthLive do
       |> assign(:current_tab, "login")
       |> assign(:errors, [])
       |> assign(:loading, false)
-      |> assign(:login_form, %{"email" => "", "password" => ""})
-      |> assign(:register_form, %{"email" => "", "username" => "", "password" => ""})
 
     {:ok, socket}
   end
@@ -50,60 +47,53 @@ defmodule PrzmaWeb.AuthLive do
 
         <!-- Login Form -->
         <div :if={@current_tab == "login"} class="mt-8">
-          <.form for={@login_form} phx-submit="login_submit" class="space-y-5">
+          <form phx-submit="login" class="space-y-5">
             <div>
-              <label>Email</label>
-              <input name="email" type="email" value={@login_form["email"]}
-                class="w-full border rounded-md p-2 mt-1" required />
+              <label class="block text-sm font-medium text-gray-700">Email</label>
+              <input type="email" name="email" class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2" required />
             </div>
 
             <div>
-              <label>Password</label>
-              <input name="password" type="password" value={@login_form["password"]}
-                class="w-full border rounded-md p-2 mt-1" required />
+              <label class="block text-sm font-medium text-gray-700">Password</label>
+              <input type="password" name="password" class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2" required />
             </div>
 
-            <button type="submit"
+            <button type="submit" disabled={@loading}
               class={[
-                "w-full py-2 px-4 rounded-md text-white",
-                if(@loading, do: "bg-indigo-400", else: "bg-indigo-600 hover:bg-indigo-700")
-              ]}
-              disabled={@loading}>
+                "w-full py-2 px-4 rounded-md text-white font-medium",
+                if(@loading, do: "bg-indigo-400 cursor-not-allowed", else: "bg-indigo-600 hover:bg-indigo-700")
+              ]}>
               <%= if @loading, do: "Signing in...", else: "Sign In" %>
             </button>
-          </.form>
+          </form>
         </div>
 
         <!-- Register Form -->
         <div :if={@current_tab == "register"} class="mt-8">
-          <.form for={@register_form} phx-submit="register_submit" class="space-y-5">
+          <form phx-submit="register" class="space-y-5">
             <div>
-              <label>Username</label>
-              <input name="username" type="text" value={@register_form["username"]}
-                class="w-full border rounded-md p-2 mt-1" required />
+              <label class="block text-sm font-medium text-gray-700">Username</label>
+              <input type="text" name="username" class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2" required />
             </div>
 
             <div>
-              <label>Email</label>
-              <input name="email" type="email" value={@register_form["email"]}
-                class="w-full border rounded-md p-2 mt-1" required />
+              <label class="block text-sm font-medium text-gray-700">Email</label>
+              <input type="email" name="email" class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2" required />
             </div>
 
             <div>
-              <label>Password</label>
-              <input name="password" type="password" value={@register_form["password"]}
-                class="w-full border rounded-md p-2 mt-1" required />
+              <label class="block text-sm font-medium text-gray-700">Password</label>
+              <input type="password" name="password" class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2" required />
             </div>
 
-            <button type="submit"
+            <button type="submit" disabled={@loading}
               class={[
-                "w-full py-2 px-4 rounded-md text-white",
-                if(@loading, do: "bg-indigo-400", else: "bg-indigo-600 hover:bg-indigo-700")
-              ]}
-              disabled={@loading}>
+                "w-full py-2 px-4 rounded-md text-white font-medium",
+                if(@loading, do: "bg-indigo-400 cursor-not-allowed", else: "bg-indigo-600 hover:bg-indigo-700")
+              ]}>
               <%= if @loading, do: "Creating account...", else: "Create Account" %>
             </button>
-          </.form>
+          </form>
         </div>
       </div>
     </div>
@@ -116,9 +106,19 @@ defmodule PrzmaWeb.AuthLive do
   end
 
   @impl true
-  def handle_event("register_submit", params, socket) do
+  def handle_event("register", %{"username" => username, "email" => email, "password" => password}, socket) do
     socket = assign(socket, :loading, true)
-    case User.create_user(params) do
+
+    attrs = %{
+      "username" => username,
+      "email" => email,
+      "password" => password,
+      "password_confirmation" => password,
+      "first_name" => username,
+      "last_name" => ""
+    }
+
+    case register_user(attrs) do
       {:ok, _user} ->
         {:noreply,
          socket
@@ -133,15 +133,16 @@ defmodule PrzmaWeb.AuthLive do
   end
 
   @impl true
-  def handle_event("login_submit", %{"email" => email, "password" => password}, socket) do
+  def handle_event("login", %{"email" => email, "password" => password}, socket) do
     socket = assign(socket, :loading, true)
+
     with {:ok, user} <- User.get_by_email(email),
          true <- User.verify_password(user, password) do
       {:noreply,
        socket
        |> put_flash(:info, "Login successful!")
        |> assign(:loading, false)
-       |> push_navigate(to: "/dashboard")}
+       |> push_navigate(to: "/app/dashboard")}
     else
       _ ->
         {:noreply,
@@ -151,7 +152,12 @@ defmodule PrzmaWeb.AuthLive do
     end
   end
 
-  # Helper
+  defp register_user(attrs) do
+    %User{}
+    |> User.registration_changeset(attrs)
+    |> Przma.Repo.insert()
+  end
+
   defp extract_changeset_errors(changeset) do
     Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
       Enum.reduce(opts, msg, fn {key, value}, acc ->

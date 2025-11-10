@@ -32,6 +32,10 @@ defmodule Przma.MixProject do
       {:phoenix_live_view, "~> 1.1.16"},
       {:phoenix_view, "~> 2.0"},
 
+      # Asset Builders
+      {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
+      {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
+
       # Database
       {:ecto_sql, "~> 3.13.2"},
       {:postgrex, ">= 0.0.0"},
