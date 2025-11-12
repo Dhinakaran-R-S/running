@@ -21,6 +21,7 @@ defmodule Przma.Accounts do
     |> Repo.insert()
   end
 
+  @spec get_organization(any()) :: {:error, :not_found} | {:ok, any()}
   @doc """
   Gets an organization by ID.
   """
@@ -237,6 +238,23 @@ defmodule Przma.Accounts do
     case Repo.get_by(User, username: username) do
       nil -> {:error, :not_found}
       user -> {:ok, Repo.preload(user, :roles)}
+    end
+  end
+
+  @doc """
+Authenticates a user by username and password.
+"""
+  def authenticate_user(username, password) do
+    case Repo.get_by(User, username: username) do
+      nil ->
+        {:error, :user_not_found}
+
+      user ->
+        if Pbkdf2.verify_pass(password, user.password_hash) do
+          {:ok, user}
+        else
+          {:error, :invalid_password}
+        end
     end
   end
 

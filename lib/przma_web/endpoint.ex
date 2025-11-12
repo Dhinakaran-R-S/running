@@ -23,7 +23,8 @@ defmodule PrzmaWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :przma,
-    gzip: not code_reloading?,
+    # gzip: not code_reloading?,
+    gzip: false,
     only: PrzmaWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the

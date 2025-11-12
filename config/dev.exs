@@ -24,7 +24,10 @@ config :przma, PrzmaWeb.Endpoint,
   code_reloader: true,
   debug_errors: true,
   secret_key_base: "QUw67RWrq9OAyzoXDZIz8WzSwllfq0/Pm18wAuJWdtL8zp99rcAND/f0KcCyKV61",
-  watchers: []
+  watchers: [
+    esbuild: {Esbuild, :install_and_run, [:api, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:api, ~w(--watch)]}
+  ]
 
 # ## SSL Support
 #

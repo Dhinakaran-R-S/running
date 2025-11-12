@@ -154,8 +154,13 @@ defmodule PrzmaWeb.Router do
   scope "/", PrzmaWeb do
     pipe_through :browser
 
-    live "/auth", AuthLive
-    live "/app/dashboard", DashboardLive, :index
+    get "/", RedirectController, :to_login
+
+    live "/auth/login", AuthLive.Login
+    live "/auth/register", AuthLive.Register
+    live "/auth/reset-password", AuthLive.ResetPassword
+    live "/dashboard", PrzmaWeb.DashboardLive, :index
+
   end
 
   # ============================================================================

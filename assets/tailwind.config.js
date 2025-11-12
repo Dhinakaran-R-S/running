@@ -7,9 +7,9 @@ const path = require("path")
 
 module.exports = {
   content: [
-    "./js/**/*.js",
-    "../lib/temp_assets_web.ex",
-    "../lib/temp_assets_web/**/*.*ex"
+    "./js//*.js",
+    "../lib/przma_web.ex",
+    "../lib/przma_web//*.*ex"
   ],
   theme: {
     extend: {
@@ -30,7 +30,7 @@ module.exports = {
     plugin(({addVariant}) => addVariant("phx-change-loading", [".phx-change-loading&", ".phx-change-loading &"])),
 
     // Embeds Heroicons (https://heroicons.com) into your app.css bundle
-    // See your `CoreComponents.icon/1` for more information.
+    // See your CoreComponents.icon/1 for more information.
     //
     plugin(function({matchComponents, theme}) {
       let iconsDir = path.join(__dirname, "../deps/heroicons/optimized")
@@ -57,9 +57,9 @@ module.exports = {
             size = theme("spacing.4")
           }
           return {
-            [`--hero-${name}`]: `url('data:image/svg+xml;utf8,${content}')`,
-            "-webkit-mask": `var(--hero-${name})`,
-            "mask": `var(--hero-${name})`,
+            [--hero-${name}]: url('data:image/svg+xml;utf8,${content}'),
+            "-webkit-mask": var(--hero-${name}),
+            "mask": var(--hero-${name}),
             "mask-repeat": "no-repeat",
             "background-color": "currentColor",
             "vertical-align": "middle",

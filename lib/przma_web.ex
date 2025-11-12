@@ -2,19 +2,6 @@ defmodule PrzmaWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, components, channels, and so on.
-
-  This can be used in your application as:
-
-      use PrzmaWeb, :controller
-      use PrzmaWeb, :view
-
-  The definitions below will be executed for every controller,
-  view, etc, so keep them short and clean, focused on imports,
-  uses and aliases.
-
-  Do NOT define functions inside the quoted expressions
-  below. Instead, define additional modules and import
-  those modules here.
   """
 
   def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
@@ -66,6 +53,16 @@ defmodule PrzmaWeb do
         layout: {PrzmaWeb.Layouts, :app}
 
       unquote(html_helpers())
+      unquote(verified_routes())
+    end
+  end
+
+  def live_component do
+    quote do
+      use Phoenix.LiveComponent
+
+      unquote(html_helpers())
+      unquote(verified_routes())
     end
   end
 
@@ -79,29 +76,23 @@ defmodule PrzmaWeb do
   end
 
   defp html_helpers do
-  quote do
-    import Phoenix.HTML
-    import Phoenix.LiveView.Helpers
-    import Phoenix.Component
-    alias PrzmaWeb.Router.Helpers, as: Routes
+    quote do
+      import Phoenix.HTML
+      import Phoenix.LiveView.Helpers
+      import Phoenix.Component
+      alias PrzmaWeb.Router.Helpers, as: Routes
+    end
   end
-end
 
   def html do
     quote do
       use Phoenix.Component
 
-      # Import convenience functions from controllers
       import Phoenix.Controller,
         only: [get_csrf_token: 0, get_flash: 1, get_flash: 2, view_module: 1]
 
-      # Include HTML helpers (forms, tags, etc)
       import Phoenix.HTML
-
-      # Import core UI components (if you have them)
       import PrzmaWeb.CoreComponents
-
-      # Import translation and route helpers
       import PrzmaWeb.Gettext
       alias PrzmaWeb.Router.Helpers, as: Routes
 
