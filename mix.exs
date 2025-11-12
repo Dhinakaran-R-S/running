@@ -36,6 +36,14 @@ defmodule Przma.MixProject do
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
 
+      {:heroicons,
+      github: "tailwindlabs/heroicons",
+      tag: "v2.1.1",
+      sparse: "optimized",
+      app: false,
+      compile: false,
+      depth: 1},
+
       # Database
       {:ecto_sql, "~> 3.13.2"},
       {:postgrex, ">= 0.0.0"},
@@ -111,15 +119,17 @@ defmodule Przma.MixProject do
       {:dotenvy, "~> 0.7.0"}
     ]
   end
-
- defp aliases do
+  defp aliases do
     [
-      setup: ["deps.get", "assets.setup", "assets.build"],
+      setup: ["deps.get", "ecto.setup"],
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["tailwind przma", "esbuild przma"],
+      "assets.build": ["esbuild przma", "tailwind przma"],
       "assets.deploy": [
-        "tailwind przma --minify",
         "esbuild przma --minify",
+        "tailwind przma --minify",
         "phx.digest"
       ]
     ]

@@ -141,14 +141,16 @@ end
 # ExAws Configuration for Linode Object Storage
 # ========================================================================
 
-config :ex_aws,
-  access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
-  secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
-  region: System.get_env("AWS_REGION"),
-  s3: [
-    scheme: "https://",
-    host: URI.parse(System.get_env("AWS_S3_ENDPOINT")).host,
-    region: System.get_env("AWS_REGION")
-  ]
+  if System.get_env("AWS_ACCESS_KEY_ID") && System.get_env("AWS_S3_ENDPOINT") do
+    config :ex_aws,
+      access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
+      secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
+      region: System.get_env("AWS_REGION"),
+      s3: [
+        scheme: "https://",
+        host: URI.parse(System.get_env("AWS_S3_ENDPOINT")).host,
+        region: System.get_env("AWS_REGION")
+      ]
 
-config :przma, :cas_backend, :s3
+    config :przma, :cas_backend, :s3
+  end

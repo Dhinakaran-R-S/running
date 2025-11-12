@@ -7,9 +7,9 @@ const path = require("path")
 
 module.exports = {
   content: [
-    "./js//*.js",
+    "./js/**/*.js",
     "../lib/przma_web.ex",
-    "../lib/przma_web//*.*ex"
+    "../lib/przma_web/**/*.*ex"
   ],
   theme: {
     extend: {
@@ -57,9 +57,9 @@ module.exports = {
             size = theme("spacing.4")
           }
           return {
-            [--hero-${name}]: url('data:image/svg+xml;utf8,${content}'),
-            "-webkit-mask": var(--hero-${name}),
-            "mask": var(--hero-${name}),
+            [`--hero-${name}`]: `url('data:image/svg+xml;utf8,${content}')`,
+            "-webkit-mask": `var(--hero-${name})`,
+            "mask": `var(--hero-${name})`,
             "mask-repeat": "no-repeat",
             "background-color": "currentColor",
             "vertical-align": "middle",

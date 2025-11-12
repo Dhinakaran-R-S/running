@@ -2,11 +2,11 @@ import Config
 
 # Configure your database
 config :przma, Przma.Repo,
-  # username: "postgres",
-  # password: "postgres",
-  # hostname: "172.235.17.68",
-  # database: "przma_dev",
-  # stacktrace: true,
+  username: "postgres",
+  password: "postgres",
+  hostname: "172.235.17.68",
+  database: "przma_dev",
+  stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -28,7 +28,6 @@ config :przma, PrzmaWeb.Endpoint,
     esbuild: {Esbuild, :install_and_run, [:api, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:api, ~w(--watch)]}
   ]
-
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
@@ -52,6 +51,19 @@ config :przma, PrzmaWeb.Endpoint,
 # configured to run both http and https servers on
 # different ports.
 
+
+config :przma, PrzmaWeb.Endpoint,
+  live_reload: [
+    patterns: [
+      ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
+      ~r"priv/gettext/.*(po)$",
+      ~r"lib/przma_web/(controllers|live|components)/.*(ex|heex)$"
+    ]
+  ]
+  # watchers: [
+  #   esbuild: {Esbuild, :install_and_run, [:api, ~w(--sourcemap=inline --watch)]},
+  #   tailwind: {Tailwind, :install_and_run, [:api, ~w(--watch)]}
+  # ]
 # Enable dev routes for dashboard and mailbox
 config :przma, dev_routes: true
 
@@ -61,6 +73,16 @@ config :logger, :default_formatter, format: "[$level] $message\n"
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
+
+
+config :phoenix_live_view,
+  # Include HEEx debug annotations as HTML comments in rendered markup
+  debug_heex_annotations: true,
+  # Enable helpful, but potentially expensive runtime checks
+  enable_expensive_runtime_checks: true
+
+
+
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
