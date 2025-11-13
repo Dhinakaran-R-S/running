@@ -154,3 +154,10 @@ end
 
     config :przma, :cas_backend, :s3
   end
+
+  if config_env() == :prod do
+    config :przma, Przma.Auth.Token,
+      secret_key: System.get_env("5UjFeyWvHFAEVyeeVTJm6Hul6vrc5602oBhU2xcMFPN9vpZGdahWHy6BnAtm3bTA") || raise("JWT_SECRET_KEY not configured!"),
+      access_token_ttl: 900,
+      refresh_token_ttl: 604_800
+  end

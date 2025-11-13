@@ -227,7 +227,7 @@ defmodule Przma.Accounts do
   def get_user(id) do
     case Repo.get(User, id) do
       nil -> {:error, :not_found}
-      user -> {:ok, Repo.preload(user, :roles)}
+      user -> {:ok,user}
     end
   end
 

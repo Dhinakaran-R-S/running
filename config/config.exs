@@ -90,3 +90,9 @@ config :hammer,
 
 # Import environment specific config
 import_config "#{config_env()}.exs"
+
+
+config :przma, Przma.Auth.Token,
+  secret_key: "5UjFeyWvHFAEVyeeVTJm6Hul6vrc5602oBhU2xcMFPN9vpZGdahWHy6BnAtm3bTA",
+  access_token_ttl: 900,        # 15 minutes
+  refresh_token_ttl: 604_800    # 7 days

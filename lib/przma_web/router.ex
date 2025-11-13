@@ -159,7 +159,7 @@ defmodule PrzmaWeb.Router do
     live "/auth/login", AuthLive.Login
     live "/auth/register", AuthLive.Register
     live "/auth/reset-password", AuthLive.ResetPassword
-    live "/dashboard", PrzmaWeb.DashboardLive, :index
+    live "/dashboard", DashboardLive, :index
 
   end
 

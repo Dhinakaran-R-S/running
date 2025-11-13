@@ -89,3 +89,9 @@ config :phoenix, :plug_init_mode, :runtime
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+
+config :przma, Przma.Auth.Token,
+  secret_key: "5UjFeyWvHFAEVyeeVTJm6Hul6vrc5602oBhU2xcMFPN9vpZGdahWHy6BnAtm3bTA",
+  access_token_ttl: 900,        # 15 minutes
+  refresh_token_ttl: 604_800    # 7 days
